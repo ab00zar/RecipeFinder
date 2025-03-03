@@ -4,7 +4,7 @@ class RecipesController < ApplicationController
 
   def search
 
-    @recipes = Recipes::MatchingIngredientsService.new(params[:query]).call
+    @recipes = Recipes::RecipeFinderService.new(params[:query]).call
 
     render "recipes/results"
   end
