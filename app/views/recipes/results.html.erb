@@ -1,0 +1,35 @@
+<h2>Search Results</h2>
+<% if @recipes.any? %>
+  <ul>
+    <% @recipes.each do |recipe| %>
+      <li><%= link_to recipe.title, recipe_path(recipe) %></li>
+      <li><%= recipe.author %></li>
+      <li><%= recipe.ingredients %></li>
+      <li><%= recipe.hit_percent %></li>
+      <li><%= recipe.ratings %></li>
+      <% recipe.highlighted_ingredients.each do |ingredient| %>
+        <li><%= ingredient.html_safe %></li>
+      <% end %>
+      <p>Match: <%= recipe.ingredients_match_text %> (<%= recipe.hit_percent.round(1) %>%)</p>
+
+  <% end %>
+  </ul>
+<% else %>
+  <p>No recipes found.</p>
+<% end %>
+
+<%# @recipes.each do |recipe| %>
+<!--  <div class="recipe">-->
+<!--    <h2><%#= recipe.name %></h2>-->
+<!--    <p>Match: <%#= recipe.ingredients_match_text %> (<%#= recipe.hit_percent.round(1) %>%)</p>-->
+
+<!--    <h3>Ingredients:</h3>-->
+<!--    <ul>-->
+      <%# recipe.highlighted_ingredients.each do |ingredient| %>
+<!--        <li><%#= ingredient.html_safe %></li>-->
+      <%# end %>
+<!--    </ul>-->
+
+<!--    <!-- Other recipe attributes -->-->
+<!--  </div>-->
+<%# end %>
