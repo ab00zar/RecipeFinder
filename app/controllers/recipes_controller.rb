@@ -6,8 +6,14 @@ class RecipesController < ApplicationController
 
   def search
     @recipes = Recipes::RecipeFinderService.new(params[:query]).call
-
     render "recipes/results"
+  rescue ArgumentError => e
+    flash[:error] = e.message
+    redirect_to recipes_path
+  rescue StandardError => e
+    Rails.logger.error("Search error: #{e.message}")
+    flash[:error] = "An unexpected error occurred during search"
+    redirect_to recipes_path
   end
 
   private

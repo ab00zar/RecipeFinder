@@ -1,7 +1,5 @@
 module Recipes
   class MatchingIngredientsQuery < BaseQuery
-    DEFAULT_LIMIT = 10
-
     def initialize(query, relation = Recipe.all, query_formatter: Recipes::QueryFormatter)
       @query = query
       @query_formatter = query_formatter
@@ -9,8 +7,6 @@ module Recipes
     end
 
     def call
-      return @relation.limit(DEFAULT_LIMIT) if formatted_query.blank?
-
       @relation.where("ingredients_vector @@ websearch_to_tsquery('english', ?)", formatted_query)
     end
 

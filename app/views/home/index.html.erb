@@ -1,7 +1,13 @@
 <h1>Home</h1>
 <p>Please, enter your comma-separated ingredients </p>
 
+<% flash.each do |type, message| %>
+  <div class="flash <%= type %>">
+    <%= message %>
+  </div>
+<% end %>
+
 <%= form_with url: search_path, method: :get, local: true do |f| %>
-  <%= f.text_field :query, placeholder: "brown sugar, milk, banana" %>
+  <%= f.text_field :query, placeholder: "brown sugar, milk" %>
   <%= f.submit "Search" %>
 <% end %>

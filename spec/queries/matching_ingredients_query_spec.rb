@@ -24,14 +24,5 @@ RSpec.describe Recipes::MatchingIngredientsQuery do
         expect(relation).to have_received(:where).with("ingredients_vector @@ websearch_to_tsquery('english', ?)", formatted_query)
       end
     end
-
-    context 'when the query is blank' do
-      let(:formatted_query) { '' }
-
-      it 'returns a limited set of recipes' do
-        subject.call
-        expect(relation).to have_received(:limit).with(10)
-      end
-    end
   end
 end
