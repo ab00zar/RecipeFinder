@@ -15,6 +15,8 @@ module Recipes
         .split(',')
         .map(&:strip)
         .reject(&:empty?)
+        .map(&:singularize )
+        .uniq
         .map { |ingredient| %("#{ingredient}") }
         .join(" & ")
     end
