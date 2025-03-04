@@ -8,6 +8,6 @@
 <% end %>
 
 <%= form_with url: search_path, method: :get, local: true do |f| %>
-  <%= f.text_field :query, placeholder: "brown sugar, milk" %>
+  <%= f.text_field :query, placeholder: "brown sugar, milk", size: 30 %>
   <%= f.submit "Search" %>
 <% end %>
