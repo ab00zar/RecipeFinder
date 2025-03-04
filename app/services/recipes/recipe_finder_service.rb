@@ -2,12 +2,14 @@ module Recipes
   class RecipeFinderService
     def initialize(
       query,
+      query_validator: Recipes::QueryValidatorService.new(query),
       ingredient_extractor: Recipes::IngredientsExtractorService,
       recipe_query: Recipes::MatchingIngredientsQuery,
       recipe_sorter: Recipes::SortRecipeService,
       recipe_presenter_factory: Recipes::RecipePresenterFactory
     )
       @query = query
+      @query_validator = query_validator
       @ingredient_extractor = ingredient_extractor
       @recipe_query = recipe_query
       @recipe_sorter = recipe_sorter
@@ -15,7 +17,7 @@ module Recipes
     end
 
     def call
-      validate_query!
+      @query_validator.validate!
       query_ingredients = extract_ingredients
       recipes = find_matching_recipes
       final_results = present_recipes(recipes, query_ingredients)
@@ -23,13 +25,6 @@ module Recipes
     end
 
     private
-
-    def validate_query!
-      raise ArgumentError, "Query cannot be nil" if @query.nil?
-      raise ArgumentError, "Query must be a string" unless @query.is_a?(String)
-      raise ArgumentError, "Query contains invalid characters" if @query.match?(/[^a-zA-Z0-9\s,]/)
-      raise ArgumentError, "Query is too long" if @query.length > 500
-    end
 
     def extract_ingredients
       @ingredient_extractor.call(@query)

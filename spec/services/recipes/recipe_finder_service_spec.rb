@@ -1,6 +1,7 @@
 RSpec.describe Recipes::RecipeFinderService do
   describe '#call' do
     let(:query) { 'apple, banana' }
+    let(:query_validator) { instance_double(Recipes::QueryValidatorService) }
     let(:ingredient_extractor) { class_double(Recipes::IngredientsExtractorService) }
     let(:recipe_query) { class_double(Recipes::MatchingIngredientsQuery) }
     let(:recipe_sorter) { class_double(Recipes::SortRecipeService) }
@@ -9,6 +10,7 @@ RSpec.describe Recipes::RecipeFinderService do
     let(:service) do
       Recipes::RecipeFinderService.new(
         query,
+        query_validator: query_validator,
         ingredient_extractor: ingredient_extractor,
         recipe_query: recipe_query,
         recipe_sorter: recipe_sorter,
@@ -22,13 +24,15 @@ RSpec.describe Recipes::RecipeFinderService do
     let(:sorted_recipes) { presented_recipes.reverse }
 
     before do
+      allow(query_validator).to receive(:validate!).and_return(true)
       allow(ingredient_extractor).to receive(:call).with(query).and_return(extracted_ingredients)
       allow(recipe_query).to receive(:new).with(query).and_return(double(call: matching_recipes))
       allow(recipe_presenter_factory).to receive(:new).and_return(double(call: presented_recipes[0]), double(call: presented_recipes[1]))
       allow(recipe_sorter).to receive(:call).with(presented_recipes).and_return(sorted_recipes)
     end
 
-    it 'calls the ingredient extractor, recipe query, presenter factory, and sorter' do
+    it 'calls the query validator, ingredient extractor, recipe query, presenter factory, and sorter' do
+      expect(query_validator).to receive(:validate!)
       expect(ingredient_extractor).to receive(:call).with(query)
       expect(recipe_query).to receive(:new).with(query).and_return(double(call: matching_recipes))
       expect(recipe_presenter_factory).to receive(:new).twice
@@ -45,6 +49,11 @@ RSpec.describe Recipes::RecipeFinderService do
       service.call
       expect(recipe_presenter_factory).to have_received(:new).with(matching_recipes[0], 2, extracted_ingredients)
       expect(recipe_presenter_factory).to have_received(:new).with(matching_recipes[1], 2, extracted_ingredients)
+    end
+
+    it 'calls the recipe_query with a new instance of MatchingIngredientsQuery' do
+      service.call
+      expect(recipe_query).to have_received(:new).with(query)
     end
   end
 end
