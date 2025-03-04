@@ -4,16 +4,14 @@ module Recipes
       query,
       ingredient_extractor: Recipes::IngredientsExtractorService,
       recipe_query: Recipes::MatchingIngredientsQuery,
-      hit_calculator: Recipes::HitCalculatorService,
       recipe_sorter: Recipes::SortRecipeService,
-      recipe_presenter: RecipePresenter
+      recipe_presenter_factory: Recipes::RecipePresenterFactory
     )
       @query = query
       @ingredient_extractor = ingredient_extractor
       @recipe_query = recipe_query
-      @hit_calculator = hit_calculator
       @recipe_sorter = recipe_sorter
-      @recipe_presenter = recipe_presenter
+      @recipe_presenter_factory = recipe_presenter_factory
     end
 
     def call
@@ -37,16 +35,7 @@ module Recipes
       matched_ingredients_count = ingredients.count
 
       recipes.map do |recipe|
-        total_ingredients_count = recipe.ingredients.count
-        hit_percent = @hit_calculator.call(matched_ingredients_count, total_ingredients_count)
-
-        @recipe_presenter.new(
-          recipe,
-          hit_percent,
-          matched_ingredients_count,
-          total_ingredients_count,
-          ingredients
-        )
+        @recipe_presenter_factory.new(recipe, matched_ingredients_count, ingredients).call
       end
     end
 

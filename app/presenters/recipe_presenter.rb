@@ -26,7 +26,6 @@ class RecipePresenter < SimpleDelegator
   private
 
   def ingredient_matches?(ingredient)
-    # Check if any user ingredient is contained within this recipe ingredient
     user_ingredients.any? do |user_ingredient|
       ingredient.downcase.include?(user_ingredient)
     end

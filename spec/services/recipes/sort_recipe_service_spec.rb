@@ -14,7 +14,7 @@ RSpec.describe Recipes::SortRecipeService do
     it 'sorts recipes with the same hit_percent by ratings in descending order' do
       sorted_recipes = described_class.call([recipe1, recipe3])
 
-      expect(sorted_recipes).to eq([recipe3, recipe1]) # Because 4.8 > 4.5
+      expect(sorted_recipes).to eq([recipe3, recipe1])
     end
 
     it 'returns an empty array when given an empty array' do
