@@ -27,7 +27,7 @@ class RecipePresenter < SimpleDelegator
 
   def ingredient_matches?(ingredient)
     user_ingredients.any? do |user_ingredient|
-      ingredient.downcase.include?(user_ingredient)
+      ingredient.downcase.include?(user_ingredient.singularize)
     end
   end
 end
