@@ -6,14 +6,10 @@ module Import
 
     def call
       validate_file_exists!
+      recipes = parse_recipes_from_file
 
       begin
-        recipes = parse_recipes_from_file
-
         recipes.each {|recipe_data| create_a_recipe(recipe_data) }
-
-      rescue JSON::ParserError => e
-        raise "Invalid JSON format: #{e.message}"
       rescue => e
         raise "Failed to import recipes: #{e.message}"
       end

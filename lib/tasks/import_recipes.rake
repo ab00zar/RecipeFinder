@@ -6,10 +6,8 @@ namespace :import do
     begin
       Import::RecipeImporterService.new(file_path).call
       puts "Recipes successfully imported!"
-    rescue Errno::ENOENT => e
-      puts "Error: #{e.message}"
     rescue => e
-      puts "Error: #{e.message}"
+      puts "Error during recipe import: #{e.message}"
     end
   end
 end
